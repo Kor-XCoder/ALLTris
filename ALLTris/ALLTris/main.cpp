@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <windows.h>
 #include "Window.h"
 #include "Input.h"
@@ -23,30 +23,25 @@ int screenWidth, screenHeight;
 
 bool single_isGameOver = false;
 Tetromino nowTetromino(-1, { -1, -1 });
-
-// TODO: 틱 단위 작업 처리
-// TODO: Wall-Kick 처리
-// TODO: 테트로미노 보드 2차원 배열 구현
-//       - 바뀐 부분만 수정할 수 있게 구현
-
 // TODO: Refactor all code
 
 void lobby();
 void singlePlayerGame();
 int main() {
-	// ------초기화------
-	Window::setCursorState(false); // 터미널 커서가 보이지 않게 설정
+	// initalizing
+	Window::setCursorState(false); // set terminal cursor to be invisible
     screenWidth = 70; screenHeight = 45;
 
     system("mode con cols=70 lines=45");
     
 	
-	// ------로비 스크린------
+	// lobby screen
 	lobby();
 }
 
 void lobby() {
 	Window::clearScreen();
+    // TETRIS LOGO
     {
         int padding = 17;
         // 1st Line 
@@ -168,7 +163,7 @@ void lobby() {
     }
     Window::setColor(Black);
 
-    // 모드 선택
+    // Selecting Modes
     const int padding = 12;
     Window::gotoXY(screenWidth / 2 - padding, screenHeight / 2);
     cout << "> SINGLE PLAYER";
@@ -177,7 +172,7 @@ void lobby() {
 
     bool isSinglePlayer = true;
 
-    // 싱글/멀티 플레이어 선택 코드
+    // Single/MultiPlayer Selecting Code
     while (!Input::isKeyDown(Input::ENTER))
     {
         if (Input::isKeyDown(Input::upArrow) || Input::isKeyDown(Input::downArrow))
@@ -208,7 +203,7 @@ void lobby() {
     Window::clearScreen();
     if (isSinglePlayer)
     {
-        // 싱글 플레이어 게임 로직
+        // SinglePlayer Game Logic
         singlePlayerGame();
     } else {
         cout << "Sorry, MultiPlayer Game is not supported in this version.";
@@ -216,24 +211,25 @@ void lobby() {
 }
 
 void singlePlayerGame() {
-    // 보드 초기화
-    Board Visual; // 사용자에게 보여지는 보드
-    Board Real; // 현재까지 쌓인 테트로미노 저장
+    // Initalizing Board
+    Board Visual; // Visible to User.
+    Board Real; // Real Board(except current Tetromino)
 
     Bag tetrominoBag;
-    // 테트리스 게임 틀 생성
+    // Render Tetris Border
     Window::renderTetrisBorder();
     Sleep(1000);
 
     single_isGameOver = false;
     while (!single_isGameOver) {
-        if (nowTetromino.type == -1) { // 내려오는 테트로미노가 없다면
-            nowTetromino.type = tetrominoBag.getTetromino();
+        if (nowTetromino.type == -1) { // if there's no coming down tetromino
+            nowTetromino.type = tetrominoBag.getTetromino(); // get Tetromino from 7-bag system
             
-            // 어디부터 시작 가능한지 검사
+            // TODO: find the spot where we can start at
             
         }
-        Window::updateBoard(Visual, Real);
+        Window::updateBoard(Visual, Real); // update the board, this will update the block that differs from previous board
+
     }
 }
 
